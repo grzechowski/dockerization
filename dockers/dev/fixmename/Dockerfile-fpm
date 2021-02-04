@@ -1,0 +1,127 @@
+FROM php:7.4-fpm-alpine
+
+# Install essential build tools
+RUN apk add --no-cache \
+    git \
+    yarn \
+    autoconf \
+    g++ \
+    make \
+    openssl-dev
+
+# Optional, force UTC as server time
+RUN echo "UTC+2" > /etc/timezone
+
+#
+# PHP INSTALLATION
+#
+
+# Setup bzip2 extension
+RUN apk add --no-cache \
+    bzip2-dev \
+    && docker-php-ext-install -j$(nproc) bz2 \
+    && docker-php-ext-enable bz2 \
+    && rm -rf /tmp/*
+
+# Setup GD extension
+RUN apk add --no-cache \
+      freetype \
+      libjpeg-turbo \
+      libpng \
+      freetype-dev \
+      libjpeg-turbo-dev \
+      libpng-dev \
+    && docker-php-ext-configure gd \
+      --with-freetype=/usr/include/ \
+      # --with-png=/usr/include/ \ # No longer necessary as of 7.4; https://github.com/docker-library/php/pull/910#issuecomment-559383597
+      --with-jpeg=/usr/include/ \
+    && docker-php-ext-install -j$(nproc) gd \
+    && docker-php-ext-enable gd \
+    && apk del --no-cache \
+      freetype-dev \
+      libjpeg-turbo-dev \
+      libpng-dev \
+    && rm -rf /tmp/*
+
+# Install intl extension
+RUN apk add --no-cache \
+    icu-dev \
+    && docker-php-ext-install -j$(nproc) intl \
+    && docker-php-ext-enable intl \
+    && rm -rf /tmp/*
+
+# Install mbstring extension
+RUN apk add --no-cache \
+    oniguruma-dev \
+    && docker-php-ext-install mbstring \
+    && docker-php-ext-enable mbstring \
+    && rm -rf /tmp/*
+
+# INstall opcache, xdebug, redis, mongodb
+RUN docker-php-source extract \
+    && pecl install opcache xdebug redis mongodb apcu \
+    && echo "xdebug.remote_enable=on\n" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo "xdebug.remote_autostart=on\n" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo "xdebug.remote_port=9000\n" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo "xdebug.remote_handler=dbgp\n" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo "xdebug.remote_connect_back=1\n" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && docker-php-ext-enable opcache xdebug redis mongodb apcu \
+    && docker-php-source delete \
+    && rm -rf /tmp/*
+
+# Install bcmath extension
+RUN apk add --no-cache \
+    && docker-php-ext-install -j$(nproc) bcmath \
+    && docker-php-ext-enable bcmath \
+    && rm -rf /tmp/*
+
+# Install soap extension
+RUN apk add --no-cache \
+    libxml2 libxml2-dev \
+    && docker-php-ext-install -j$(nproc) soap \
+    && docker-php-ext-enable soap \
+    && rm -rf /tmp/*
+
+# Install zip extension
+RUN apk add --no-cache \
+    libzip libzip-dev \
+    && docker-php-ext-install -j$(nproc) zip \
+    && docker-php-ext-enable zip \
+    && rm -rf /tmp/*
+
+# Install xsl extension
+RUN apk add --no-cache \
+    libxslt libxslt-dev \
+    && docker-php-ext-install -j$(nproc) xsl \
+    && docker-php-ext-enable xsl \
+    && rm -rf /tmp/*
+
+# Install pdo_mysql extension
+RUN apk add --no-cache \
+    && docker-php-ext-install -j$(nproc) pdo_mysql \
+    && docker-php-ext-enable pdo_mysql \
+    && rm -rf /tmp/*
+
+# Install sockets extension
+RUN apk add --no-cache \
+    && docker-php-ext-install -j$(nproc) sockets \
+    && docker-php-ext-enable sockets \
+    && rm -rf /tmp/*
+
+
+RUN sed -i 's/;error_log/error_log/g' /usr/local/etc/php-fpm.conf
+RUN sed -i 's/log\/php-fpm.log/\/var\/log\/php-fpm.log/g' /usr/local/etc/php-fpm.conf
+
+#
+# PHP INSTALLATION EOT
+#
+
+RUN curl -sS https://getcomposer.org/download/1.10.19/composer.phar -o composer
+RUN chmod a+x composer && mv composer /usr/local/bin/composer
+
+RUN apk add --no-cache mariadb-connector-c-dev mysql-client && rm -rf /tmp/*
+
+RUN apk add --no-cache bash && rm -rf /tmp/*
+
+WORKDIR /fixmename
+ENTRYPOINT ["/usr/local/sbin/php-fpm"]
