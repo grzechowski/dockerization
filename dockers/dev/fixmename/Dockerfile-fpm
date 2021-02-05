@@ -123,5 +123,7 @@ RUN apk add --no-cache mariadb-connector-c-dev mysql-client && rm -rf /tmp/*
 
 RUN apk add --no-cache bash && rm -rf /tmp/*
 
+RUN apk add --no-cache npm && rm -rf /tmp/*
+
 WORKDIR /fixmename
 ENTRYPOINT ["/usr/local/sbin/php-fpm"]
