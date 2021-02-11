@@ -1,4 +1,4 @@
-# INSTALL @ becomewater/dockerization
+# Requirements @ becomewater/dockerization
 
 Quick local development tools based on docker
 

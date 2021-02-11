@@ -5,7 +5,8 @@
 
 172.16.01.101 mail.fixmename.dock
 172.16.01.102 fixmename.dock www.fixmename.dock
-172.16.01.103 db.fixmename.dock
+172.16.01.103 fpm.fixmename.dock
+172.16.01.104 db.fixmename.dock
 
 #
 # END: fixmename/dockerization dev projects hosts

@@ -33,6 +33,7 @@ services:
     volumes:
       - DEV_REPO:/fixmename
       - ./docker:/docker
+      - /home/keo/workspace-grzechowski/merito-lvss-01:/merito
   db:
     image: "mysql:8"
     command: ['--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci' ]

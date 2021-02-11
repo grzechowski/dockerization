@@ -15,3 +15,7 @@ do
   echo "Waiting for database server to start"
   sleep 1
 done
+
+# fix storage
+chmod -R a+rwx storage
+chmod -R a+rwx boostrap/cache

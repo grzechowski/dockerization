@@ -108,6 +108,15 @@ RUN apk add --no-cache \
     && docker-php-ext-enable sockets \
     && rm -rf /tmp/*
 
+# Install exif extension
+RUN docker-php-ext-install exif \
+    && docker-php-ext-enable exif \
+    && rm -rf /tmp/*
+
+# SPATIE optimization requirements
+RUN apk add --no-cache \
+    jpegoptim optipng pngquant gifsicle \
+    && rm -rf /tmp/*
 
 RUN sed -i 's/;error_log/error_log/g' /usr/local/etc/php-fpm.conf
 RUN sed -i 's/log\/php-fpm.log/\/var\/log\/php-fpm.log/g' /usr/local/etc/php-fpm.conf
@@ -116,14 +125,16 @@ RUN sed -i 's/log\/php-fpm.log/\/var\/log\/php-fpm.log/g' /usr/local/etc/php-fpm
 # PHP INSTALLATION EOT
 #
 
-RUN curl -sS https://getcomposer.org/download/1.10.19/composer.phar -o composer
-RUN chmod a+x composer && mv composer /usr/local/bin/composer
+RUN curl -sS https://getcomposer.org/installer -o composer-setup.php
+RUN php composer-setup.php --install-dir=/usr/local/bin --filename=composer
 
 RUN apk add --no-cache mariadb-connector-c-dev mysql-client && rm -rf /tmp/*
 
 RUN apk add --no-cache bash && rm -rf /tmp/*
 
 RUN apk add --no-cache npm && rm -rf /tmp/*
+# SPATIE requirements follow up
+RUN npm install -g svgo && rm -rf /tmp/*
 
 WORKDIR /fixmename
 ENTRYPOINT ["/usr/local/sbin/php-fpm"]
