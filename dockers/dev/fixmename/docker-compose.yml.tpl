@@ -8,7 +8,7 @@ services:
       - "127.0.0.1:51102:80"
     networks:
       default:
-        ipv4_address: 172.16.01.102
+        ipv4_address: 172.16.1.102
     environment:
       - MYSQL_ROOT_PASSWORD=fixmename
       - MYSQL_DATABASE=fixmename
@@ -25,7 +25,7 @@ services:
       dockerfile: Dockerfile-fpm
     networks:
       default:
-        ipv4_address: 172.16.01.103
+        ipv4_address: 172.16.1.103
     depends_on:
       - db
     links:
@@ -33,7 +33,7 @@ services:
     volumes:
       - DEV_REPO:/fixmename
       - ./docker:/docker
-      - /home/keo/workspace-grzechowski/merito-lvss-01:/merito
+      - /home/keo/workspace-grzechowski/merito-lvssb:/merito-lvssb
   db:
     image: "mysql:8"
     command: ['--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci' ]
@@ -41,7 +41,7 @@ services:
       - "127.0.0.1:51104:3306"
     networks:
       default:
-        ipv4_address: 172.16.01.104
+        ipv4_address: 172.16.1.104
     environment:
       - MYSQL_ROOT_PASSWORD=fixmename
       - MYSQL_DATABASE=fixmename
