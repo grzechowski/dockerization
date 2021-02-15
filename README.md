@@ -1,6 +1,6 @@
 # README @ grzechowski/dockerization
 
-Quick local development tools based on bash, docker and docker-compose
+Quick [local development tools based on bash, docker and docker-compose](https://github.com/grzechowski/dockerization)
 
 ## Docker toolkit installation/update
 
