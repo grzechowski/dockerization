@@ -1,0 +1,12 @@
+version: '2'
+services:
+  mail:
+    build: .
+    networks:
+      default:
+        ipv4_address: 172.16.1.101
+
+networks:
+  default:
+    external:
+      name: fixmename_net
