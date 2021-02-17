@@ -18,4 +18,4 @@ done
 
 # fix storage
 for i in `find storage -type d`; do chmod a+rwx $i; done
-chmod -R a+rwx bootstrap/cache
+chmod a+rwx bootstrap/cache
