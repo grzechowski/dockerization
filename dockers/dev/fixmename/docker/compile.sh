@@ -5,7 +5,9 @@ cd /fixmename
 composer install
 composer dump-autoload
 
-npm install
 ./artisan migrate:install
+
+npm install
+npm run dev
 
 cd /docker
